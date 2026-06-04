@@ -1,0 +1,29 @@
+# Certificados generados por Terraform (secretos)
+edge_gateway/certs/
+edge_gateway/mosquitto.conf
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/*.tfplan
+
+# Lambda: dependencias instaladas por pip (se regeneran con make build-lambdas)
+# Solo se trackean handler.py y requirements.txt
+lambda/s3_to_postgres/*.egg-info
+lambda/s3_to_postgres/pg8000/
+lambda/s3_to_postgres/scramp/
+lambda/s3_to_postgres/*.dist-info/
+lambda/s3_to_postgres/asn1crypto/
+lambda/s3_to_postgres/dateutil/
+lambda/s3_to_postgres/six.py
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Zips de Lambda generados
+/tmp/*.zip

@@ -1,0 +1,56 @@
+services:
+
+  # Edge Gateway — Mosquitto MQTT broker con bridge a AWS IoT Core
+  mosquitto:
+    build:
+      context: ./edge_gateway
+      dockerfile: Dockerfile
+    container_name: edge-gateway-mosquitto
+    ports:
+      - "1883:1883"
+    restart: unless-stopped
+
+  # Sensor de Temperatura
+  sensor_temp_01:
+    build:
+      context: ./python_device
+      dockerfile: Dockerfile
+    container_name: sensor-temp-01
+    environment:
+      - MQTT_HOST=mosquitto
+      - CLIENT_ID=sensor-temp-01
+      - SENSOR_TYPE=temperature
+      - INTERVAL=5
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
+  # Sensor de Humedad
+  sensor_humidity_01:
+    build:
+      context: ./python_device
+      dockerfile: Dockerfile
+    container_name: sensor-humidity-01
+    environment:
+      - MQTT_HOST=mosquitto
+      - CLIENT_ID=sensor-humidity-01
+      - SENSOR_TYPE=humidity
+      - INTERVAL=7
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
+  # Sensor de CO2 — agregado para la sustentación (Hito 7)
+  sensor_co2_01:
+    build:
+      context: ./python_device
+      dockerfile: Dockerfile
+    container_name: sensor-co2-01
+    environment:
+      - MQTT_HOST=mosquitto
+      - CLIENT_ID=sensor-co2-01
+      - SENSOR_TYPE=co2
+      - INTERVAL=10
+    depends_on:
+      - mosquitto
+    restart: unless-stopped

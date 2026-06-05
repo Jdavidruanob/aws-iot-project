@@ -50,16 +50,17 @@ module "postgres" {
 
 # ── Lambda Functions ──────────────────────────────────────────────────────────
 module "lambda" {
-  source              = "./modules/lambda"
-  lab_role_arn        = data.aws_iam_role.lab_role.arn
-  sensor_bucket_name  = module.storage.sensor_bucket_name
-  sensor_bucket_arn   = module.storage.sensor_bucket_arn
-  sqs_queue_url       = module.messaging.queue_url
-  sqs_queue_arn       = module.messaging.queue_arn
-  postgres_host       = module.postgres.private_ip
-  postgres_password   = var.postgres_password
-  subnet_ids          = tolist(data.aws_subnets.default.ids)
-  lambda_sg_id        = module.networking.lambda_sg_id
+  source               = "./modules/lambda"
+  lab_role_arn         = data.aws_iam_role.lab_role.arn
+  sensor_bucket_name   = module.storage.sensor_bucket_name
+  sensor_bucket_arn    = module.storage.sensor_bucket_arn
+  sqs_queue_url        = module.messaging.queue_url
+  sqs_queue_arn        = module.messaging.queue_arn
+  postgres_host        = module.postgres.private_ip
+  postgres_password    = var.postgres_password
+  subnet_ids           = tolist(data.aws_subnets.default.ids)
+  lambda_sg_id         = module.networking.lambda_sg_id
+  registry_table_name  = module.database.registry_table_name
 }
 
 # ── SQS ───────────────────────────────────────────────────────────────────────

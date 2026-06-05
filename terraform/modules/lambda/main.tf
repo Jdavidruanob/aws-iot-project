@@ -29,11 +29,12 @@ resource "aws_lambda_function" "s3_to_postgres" {
 
   environment {
     variables = {
-      POSTGRES_HOST     = var.postgres_host
-      POSTGRES_PORT     = "5432"
-      POSTGRES_DB       = "iotdb"
-      POSTGRES_USER     = "iotuser"
-      POSTGRES_PASSWORD = var.postgres_password
+      POSTGRES_HOST            = var.postgres_host
+      POSTGRES_PORT            = "5432"
+      POSTGRES_DB              = "iotdb"
+      POSTGRES_USER            = "iotuser"
+      POSTGRES_PASSWORD        = var.postgres_password
+      DYNAMODB_REGISTRY_TABLE  = var.registry_table_name
     }
   }
 }
@@ -51,8 +52,8 @@ resource "aws_s3_bucket_notification" "s3_trigger" {
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.s3_to_postgres.arn
-    events              = ["s3:ObjectCreated:*"]
-    filter_prefix       = "data/"
+    events              = ["s3:ObjectCreated:*"]  # cualquier archivo nuev
+    filter_prefix       = "data/"                 # solo en carpeta "data/"
   }
 
   depends_on = [aws_lambda_permission.s3_invoke]
@@ -112,6 +113,6 @@ resource "aws_lambda_function" "cloudwatch_logger" {
 resource "aws_lambda_event_source_mapping" "sqs_to_logger" {
   event_source_arn = var.sqs_queue_arn
   function_name    = aws_lambda_function.cloudwatch_logger.arn
-  batch_size       = 1
-  enabled          = true
+  batch_size       = 1 # un mensaje a la vez 
+  enabled          = true # activo desde el inicio 
 }

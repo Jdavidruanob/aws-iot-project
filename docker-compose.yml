@@ -21,6 +21,7 @@ services:
       - CLIENT_ID=sensor-temp-01
       - SENSOR_TYPE=temperature
       - INTERVAL=5
+      - PYTHONUNBUFFERED=1
     depends_on:
       - mosquitto
     restart: unless-stopped
@@ -36,11 +37,12 @@ services:
       - CLIENT_ID=sensor-humidity-01
       - SENSOR_TYPE=humidity
       - INTERVAL=7
+      - PYTHONUNBUFFERED=1
     depends_on:
       - mosquitto
     restart: unless-stopped
 
-  # Sensor de CO2 — agregado para la sustentación (Hito 7)
+  # Sensor de CO2 — Nuevo
   sensor_co2_01:
     build:
       context: ./python_device
@@ -51,6 +53,7 @@ services:
       - CLIENT_ID=sensor-co2-01
       - SENSOR_TYPE=co2
       - INTERVAL=10
+      - PYTHONUNBUFFERED=1
     depends_on:
       - mosquitto
     restart: unless-stopped

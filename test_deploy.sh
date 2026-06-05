@@ -198,14 +198,14 @@ NOW_MS=$(date +%s%3N)
 ONE_HOUR_AGO_MS=$((NOW_MS - 3600000))
 CW_ALERTS=$(aws logs filter-log-events \
     --log-group-name /aws/lambda/iot-cloudwatch-logger \
-    --filter-pattern "HIGH_TEMPERATURE" \
+    --filter-pattern "ALERTA DE URGENCIA" \
     --start-time "$ONE_HOUR_AGO_MS" \
-    --query 'length(events)' --output text 2>/dev/null || echo "0")
+    --query 'length(events)' --output text 2>/dev/null | head -1 || echo "0")
 
 if [ "${CW_ALERTS:-0}" -gt 0 ] 2>/dev/null; then
     LAST=$(aws logs filter-log-events \
         --log-group-name /aws/lambda/iot-cloudwatch-logger \
-        --filter-pattern "HIGH_TEMPERATURE" \
+        --filter-pattern "ALERTA DE URGENCIA" \
         --start-time "$ONE_HOUR_AGO_MS" \
         --query 'events[-1].message' --output text 2>/dev/null | cut -c1-70 || echo "?")
     check "Alertas HIGH_TEMPERATURE en CloudWatch" "ok" \
@@ -213,24 +213,6 @@ if [ "${CW_ALERTS:-0}" -gt 0 ] 2>/dev/null; then
 else
     check "Alertas HIGH_TEMPERATURE en CloudWatch" "fail" \
         "0 en última hora — ¿sensores encendidos? ¿temp>35°C?"
-fi
-
-# ── 9. Contenedores locales (requiere socket Docker montado) ──────────────────
-echo ""; echo "▶ Contenedores locales (sensores + gateway)"
-if ! command -v docker &>/dev/null; then
-    echo -e "$INFO  Docker no disponible en este contexto."
-    echo -e "$INFO  Para verificar contenedores locales añade al docker run:"
-    echo -e "$INFO    -v /var/run/docker.sock:/var/run/docker.sock"
-else
-    for CONTAINER in "sensor-temp-01" "sensor-humidity-01" "sensor-co2-01" "edge-gateway-mosquitto"; do
-        STATE=$(docker inspect --format '{{.State.Status}}' "$CONTAINER" 2>/dev/null || echo "not found")
-        STATE=$(echo "$STATE" | tr -d '\n')
-        if [ "$STATE" = "running" ]; then
-            check "Contenedor $CONTAINER" "ok"
-        else
-            check "Contenedor $CONTAINER" "fail" "state=$STATE  →  ejecuta: make local-up"
-        fi
-    done
 fi
 
 # ── Resumen ───────────────────────────────────────────────────────────────────

@@ -9,7 +9,7 @@ resource "aws_iot_certificate" "cert" {
 }
 
 # Política IoT: solo permite al Edge Gateway conectarse y publicar en lab/sensors/*
-resource "aws_iot_policy" "sensor_policy" {
+resource "aws_iot_policy" "sensor_policy" { # que puede hacer el dispositivo thing
   name = "EdgeGatewayPolicy-${var.environment}"
   policy = jsonencode({
     Version = "2012-10-17"

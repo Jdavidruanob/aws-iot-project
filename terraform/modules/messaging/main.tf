@@ -3,8 +3,8 @@
 # para evitar dependencia circular.
 resource "aws_sqs_queue" "alerts" {
   name                       = "${var.project_name}-alerts-${var.environment}"
-  message_retention_seconds  = 86400
-  visibility_timeout_seconds = 30
+  message_retention_seconds  = 86400 # 24 horas 
+  visibility_timeout_seconds = 30 # 30s para la lambda
 
   tags = {
     Environment = var.environment

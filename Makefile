@@ -1,6 +1,6 @@
 .PHONY: aws-up aws-down local-up local-down logs clean build-lambdas build-api push-api
 
-# Cambia esto por tu usuario de Docker Hub
+#  usuario de Docker Hub
 DOCKER_HUB_USER ?= jdavidruanob
 API_IMAGE = $(DOCKER_HUB_USER)/iot-api:latest
 

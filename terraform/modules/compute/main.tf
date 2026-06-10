@@ -87,9 +87,9 @@ resource "aws_lb_target_group" "api" {
 
   health_check {
     path                = "/health"
-    healthy_threshold   = 2
-    unhealthy_threshold = 3
-    timeout             = 5
+    healthy_threshold   = 2 # 2 buenas ok
+    unhealthy_threshold = 3 # 3 malas sacar
+    timeout             = 5 
     interval            = 30
   }
 }
@@ -100,7 +100,7 @@ resource "aws_lb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
+    type             = "forward" # enviar trafico
     target_group_arn = aws_lb_target_group.api.arn
   }
 }
